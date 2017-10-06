@@ -31,15 +31,7 @@ EXIV2_RCSID("@(#) $Id$")
 
 #include "config.h"
 
-#ifndef EXV_USE_SSH
-#define EXV_USE_SSH 0
-#endif
-
-#ifndef EXV_USE_CURL
-#define EXV_USE_CURL 0
-#endif
-
-#if EXV_USE_CURL == 1
+#ifdef EXV_USE_CURL
 #include <curl/curl.h>
 #endif
 
@@ -53,32 +45,12 @@ EXIV2_RCSID("@(#) $Id$")
 # endif
 #endif
 
-#ifndef EXV_HAVE_XMP_TOOLKIT
-#define EXV_HAVE_XMP_TOOLKIT 0
-#endif
-
-#ifndef EXV_HAVE_STRINGS
-#define EXV_HAVE_STRINGS 0
-#endif
-
-#ifndef  EXV_SYS_TYPES
-#define  EXV_SYS_TYPES 0
-#endif
-
-#ifndef  EXV_HAVE_UNISTD
-#define  EXV_HAVE_UNISTD 0
-#endif
-
-#ifndef  EXV_UNICODE_PATH
-#define  EXV_UNICODE_PATH 0
-#endif
-
 #include "http.hpp"
 #include "version.hpp"
 #include "makernote_int.hpp"
 
 // Adobe XMP Toolkit
-#if EXV_HAVE_XMP_TOOLKIT
+#ifdef EXV_HAVE_XMP_TOOLKIT
 #include "xmp_exiv2.hpp"
 #endif
 
@@ -173,11 +145,7 @@ static bool shouldOutput(const exv_grep_keys_t& greps,const char* key,const std:
       !bPrint && g != greps.end() ; ++g
     ) {
         std::string Key(key);
-#if __cplusplus >= CPLUSPLUS11
-        std::smatch m;
-        bPrint = std::regex_search(Key,m,*g) || std::regex_search(value,m,*g);
-#else
-#ifdef EXV_HAVE_REGEX
+#if defined(EXV_HAVE_REGEX_H)
         bPrint = (  0 == regexec( &(*g), key          , 0, NULL, 0)
                  || 0 == regexec( &(*g), value.c_str(), 0, NULL, 0)
                  );
@@ -191,7 +159,6 @@ static bool shouldOutput(const exv_grep_keys_t& greps,const char* key,const std:
                 std::transform(Value.begin()  , Value.end()  ,Value.begin()    , ::tolower);
             }
             bPrint = Key.find(Pattern) != std::string::npos || Value.find(Pattern) != std::string::npos;
-#endif
 #endif
     }
     return bPrint;
@@ -286,7 +253,6 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     "unknown";
 #endif
 
-    int have_regex       =0;
     int have_gmtime_r    =0;
     int have_inttypes    =0;
     int have_libintl     =0;
@@ -321,6 +287,8 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
 
     int enable_video     =0;
     int enable_webready  =0;
+    int use_curl         =0;
+    int use_ssh          =0;
 
 #ifdef EXV_HAVE_GMTIME_R
     have_gmtime_r=1;
@@ -344,10 +312,6 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
 
 #ifdef EXV_HAVE_LIBINTL_H
     have_libintl=1;
-#endif
-
-#ifdef EXV_HAVE_REGEX
-    have_regex=1;
 #endif
 
 #ifdef EXV_HAVE_MEMORY_H
@@ -462,6 +426,14 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
      enable_webready=1;
 #endif
 
+#ifdef EXV_USE_CURL
+    use_curl=1;
+#endif
+
+#ifdef EXV_USE_SSH
+     use_ssh=1;
+#endif
+
 #if defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW__)
     // enumerate loaded libraries and determine path to executable
     HMODULE handles[200];
@@ -518,8 +490,8 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     output(os,keys,"version"        , __VERSION__);
     output(os,keys,"date"           , __DATE__   );
     output(os,keys,"time"           , __TIME__   );
-    output(os,keys,"ssh"            , EXV_USE_SSH);
-#if EXV_USE_CURL == 1
+
+#ifdef EXV_USE_CURL
     std::string curl_protocols;
     curl_version_info_data* vinfo = curl_version_info(CURLVERSION_NOW);
     for (int i = 0; vinfo->protocols[i]; i++) {
@@ -527,9 +499,9 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
         curl_protocols += " " ;
     }
     output(os,keys,"curlprotocols" ,curl_protocols);
-#else
-    output(os,keys,"curl"          , EXV_USE_CURL);
 #endif
+
+    output(os,keys,"curl"          , use_curl);
     output(os,keys,"id"        , "$Id$");
     if ( libs.begin() != libs.end() ) {
         output(os,keys,"executable" ,*libs.begin());
@@ -537,7 +509,6 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
             output(os,keys,"library",*lib);
     }
 
-    output(os,keys,"have_regex"        ,have_regex       );
     output(os,keys,"have_strerror_r"   ,have_strerror_r  );
     output(os,keys,"have_gmtime_r"     ,have_gmtime_r    );
     output(os,keys,"have_inttypes"     ,have_inttypes    );
@@ -572,6 +543,9 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     output(os,keys,"have_unicode_path" ,have_unicode_path);
     output(os,keys,"enable_video"      ,enable_video     );
     output(os,keys,"enable_webready"   ,enable_webready  );
+    output(os,keys,"use_curl"          ,use_curl         );
+    output(os,keys,"use_ssh"           ,use_ssh          );
+
     output(os,keys,"config_path"       ,Exiv2::Internal::getExiv2ConfigPath());
 
 // #1147
@@ -581,7 +555,7 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     uid_t gid  = getgid()  ; output(os,keys,"gid" ,  gid  );
 #endif
 
-#if EXV_HAVE_XMP_TOOLKIT
+#ifdef EXV_HAVE_XMP_TOOLKIT
     const char* name = "xmlns";
 
     Exiv2::Dictionary ns;

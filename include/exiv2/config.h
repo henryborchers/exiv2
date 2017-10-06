@@ -78,6 +78,11 @@ typedef int pid_t;
 # define CURL_STATICLIB
 #endif
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+
 #endif // _MSC_VER
 ///// End of Visual Studio Support /////
 
@@ -149,10 +154,7 @@ typedef int pid_t;
 # ifndef  __MINGW__
 #  define __MINGW__ 1
 # endif
-// Don't know why MinGW refuses to link libregex
-# ifdef  EXV_HAVE_REGEX
-#  undef EXV_HAVE_REGEX
-# endif
+
 #ifdef EXV_UNICODE_PATH
 #error EXV_UNICODE_PATH is not supported for MinGW builds
 #endif
