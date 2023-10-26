@@ -32,10 +32,9 @@ class AddMinusPSOption(metaclass=CaseMeta):
         "$exiv2 -pX $bug_jpg_file",
         "$exiv2 -pX $IPTC_file",
     ] + list(
-        itertools.chain.from_iterable([
-            "$exiv2 -pX " + fname,
-            "$exiv2 -pS " + fname
-        ] for fname in files)
+        itertools.chain.from_iterable(
+            [f"$exiv2 -pX {fname}", f"$exiv2 -pS {fname}"] for fname in files
+        )
     )
 
     stdout = [

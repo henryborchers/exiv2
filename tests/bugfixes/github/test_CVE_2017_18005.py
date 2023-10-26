@@ -3,6 +3,8 @@
 import system_tests
 
 
+
+
 class TestPoC(metaclass=system_tests.CaseMeta):
 
     url = "https://github.com/Exiv2/exiv2/issues/168"
@@ -14,14 +16,16 @@ Error: Offset of directory Image, entry 0x0117 is out of bounds: Offset = 0x3030
 
     filename = "$data_path/cve_2017_18005_reproducer.tiff"
 
-    commands = [
-        "$exiv2 -vPEIXxgklnycsvth -b " + filename
-    ]
+    commands = [f"$exiv2 -vPEIXxgklnycsvth -b {filename}"]
 
-    stdout = ["""File 1/1: """ + filename + """
+    stdout = [
+        (
+            f"""File 1/1: {filename}"""
+            + """
 0x0117 Image        Exif.Image.StripByteCounts                   StripByteCounts             Strip Byte Count               SByte       0   0  
 
 """
+        )
     ]
     stderr = [
         stderr_common + filename + """: No IPTC data found in the file

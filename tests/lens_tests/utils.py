@@ -174,7 +174,7 @@ def extract_lenses_from_cpp(filename, start_pattern):
     with open(filename, "r") as f:
         in_lens_array = False
 
-        for line in f.readlines():
+        for line in f:
             stripped = line.strip()
 
             if stripped == start_pattern:

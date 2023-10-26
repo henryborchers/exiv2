@@ -38,8 +38,7 @@ def _disjoint_dict_merge(d1, d2):
     ValueError: Dictionaries have common keys.
 
     """
-    inter = set(d1.keys()).intersection(set(d2.keys()))
-    if len(inter) > 0:
+    if inter := set(d1.keys()).intersection(set(d2.keys())):
         raise ValueError("Dictionaries have common keys.")
     res = d1.copy()
     res.update(d2)
@@ -127,15 +126,14 @@ def configure_suite(config_file):
     _parameters["suite_root"] = os.path.split(os.path.abspath(config_file))[0]
 
     if 'variables' in config and 'paths' in config:
-        intersecting_keys = set(config["paths"].keys()) \
-            .intersection(set(config["variables"].keys()))
-        if len(intersecting_keys) > 0:
+        if intersecting_keys := set(config["paths"].keys()).intersection(
+            set(config["variables"].keys())
+        ):
             raise ValueError(
                 "The sections 'paths' and 'variables' must not share keys, "
-                "but they have the following common key{:s}: {:s}"
-                .format(
+                "but they have the following common key{:s}: {:s}".format(
                     's' if len(intersecting_keys) > 1 else '',
-                    ', '.join(k for k in intersecting_keys)
+                    ', '.join(intersecting_keys),
                 )
             )
 
@@ -184,7 +182,7 @@ def configure_suite(config_file):
             _parameters["timeout"] *= config.getfloat(
                 "General", "memcheck_timeout_penalty", fallback=20.0
             )
-    
+
     # Configure the parameters for bash tests
     BT.Config.bin_dir           = os.path.abspath(config['ENV']['exiv2_path'])
     BT.Config.dyld_library_path = os.path.abspath(config['ENV']['dyld_library_path'])
@@ -315,7 +313,7 @@ class FileDecoratorBase(object):
          ..
         UserWarning: Decorator used wrongly, must be called with filenames in parenthesis
         """
-        if len(files) == 0:
+        if not files:
             raise ValueError("No files supplied.")
         elif len(files) == 1:
             if isinstance(files[0], type):
@@ -459,7 +457,7 @@ class CopyFiles(FileDecoratorBase):
 
     def setUp_file_action(self, expanded_file_name):
         fname, ext = os.path.splitext(expanded_file_name)
-        new_name = fname + '_copy' + ext
+        new_name = f'{fname}_copy{ext}'
         return shutil.copyfile(expanded_file_name, new_name)
    
 class CopyTmpFiles(FileDecoratorBase):
@@ -523,20 +521,6 @@ def path(path_string):
     True
     """
     return os.path.join(*path_string.split('/'))
-
-
-    """
-    This function reads in the attributes commands, retval, stdout, stderr,
-    stdin and runs the `expand_variables` function on each. The resulting
-    commands are then run using the subprocess module and compared against the
-    expected values that were provided in the attributes via `compare_stdout`
-    and `compare_stderr`. Furthermore a threading.Timer is used to abort the
-    execution if a configured timeout is reached.
-
-    This function is automatically added as a member function to each system
-    test by the CaseMeta metaclass. This ensures that it is run by each system
-    test **after** setUp() and setUpClass() were run.
-    """
 def test_run(self):
     if not (len(self.commands) == len(self.retval)
             == len(self.stdout) == len(self.stderr) == len(self.stdin)):
@@ -545,8 +529,7 @@ def test_run(self):
             "length"
         )
 
-    for i, command, retval, stdout, stderr, stdin in \
-        zip(range(len(self.commands)),
+    for i, command, retval, stdout, stderr, stdin in zip(range(len(self.commands)),
             self.commands,
             self.retval,
             self.stdout,
@@ -564,10 +547,15 @@ def test_run(self):
 
         if _debug_mode:
             print(
-                '', "="*80, "will run: " + command, "expected stdout:", stdout,
-                "expected stderr:", stderr,
+                '',
+                "=" * 80,
+                f"will run: {command}",
+                "expected stdout:",
+                stdout,
+                "expected stderr:",
+                stderr,
                 "expected return value: {:d}".format(retval),
-                sep='\n'
+                sep='\n',
             )
 
         proc = subprocess.Popen(
@@ -841,10 +829,10 @@ class CaseMeta(type):
     the child class).
     """
 
-    def __new__(mcs, clsname, bases, dct):
+    def __new__(cls, clsname, bases, dct):
 
         assert len(_parameters) != 0, \
-            "Internal error: substitution dictionary not populated"
+                "Internal error: substitution dictionary not populated"
 
         changed = True
 
@@ -888,7 +876,7 @@ class CaseMeta(type):
 
         CaseMeta.add_default_values(clsname, dct)
 
-        return super(CaseMeta, mcs).__new__(mcs, clsname, bases, dct)
+        return super(CaseMeta, cls).__new__(cls, clsname, bases, dct)
 
     @staticmethod
     def add_default_values(clsname, dct):

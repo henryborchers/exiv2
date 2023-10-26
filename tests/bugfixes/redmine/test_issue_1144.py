@@ -2,6 +2,8 @@
 
 import system_tests
 
+
+
 class CheckPentaxK10(metaclass=system_tests.CaseMeta):
 
     url = "http://dev.exiv2.org/issues/1144"
@@ -15,13 +17,14 @@ class CheckPentaxK10(metaclass=system_tests.CaseMeta):
                  "$data_path/exiv2-bug1144g.exv",
     ]
 
-    commands = [ "$exiv2 -pa -b -g Lens " + filenames[0],
-                 "$exiv2 -pa -b -g Lens " + filenames[1],
-                 "$exiv2 -pa -b -g Lens " + filenames[2],
-                 "$exiv2 -pa -b -g Lens " + filenames[3],
-                 "$exiv2 -pa -b -g Lens " + filenames[4],
-                 "$exiv2 -pa -b -g Lens " + filenames[5],
-                 "$exiv2 -pa -b -g Lens " + filenames[6],
+    commands = [
+        f"$exiv2 -pa -b -g Lens {filenames[0]}",
+        f"$exiv2 -pa -b -g Lens {filenames[1]}",
+        f"$exiv2 -pa -b -g Lens {filenames[2]}",
+        f"$exiv2 -pa -b -g Lens {filenames[3]}",
+        f"$exiv2 -pa -b -g Lens {filenames[4]}",
+        f"$exiv2 -pa -b -g Lens {filenames[5]}",
+        f"$exiv2 -pa -b -g Lens {filenames[6]}",
     ]
 
     stdout = [ """Exif.PentaxDng.LensType                      Byte        3  Sigma AF 10-20mm F4-5.6 EX DC

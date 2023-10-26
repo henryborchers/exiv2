@@ -3,6 +3,8 @@
 from system_tests import CaseMeta, path
 
 
+
+
 class NewTamronAndPentaxLenses(metaclass=CaseMeta):
 
     url = "http://dev.exiv2.org/issues/884"
@@ -12,9 +14,7 @@ class NewTamronAndPentaxLenses(metaclass=CaseMeta):
         for char in ["a", "b", "c"]
     ]
 
-    commands = [
-        "$exiv2 -pt --grep LensType " + fname for fname in filenames
-    ]
+    commands = [f"$exiv2 -pt --grep LensType {fname}" for fname in filenames]
 
     stdout = [
         """Exif.Pentax.LensType                         Byte        2  Tamron SP AF 17-50mm F2.8 XR Di II

@@ -3,6 +3,8 @@
 import system_tests
 
 
+
+
 class TamronSupport(metaclass=system_tests.CaseMeta):
 
     description = "Added support for 'Tamron SP 15-30mm f/2.8 Di VC USD' and 'Tamron SP 90mm f/2.8 Di VC USD MACRO1:1'"
@@ -14,11 +16,14 @@ class TamronSupport(metaclass=system_tests.CaseMeta):
         "TamronSP90mmF2.8DiVCUSDMacroF004.exv",
         "TamronSP90mmF2.8DiVCUSDMacroF017.exv"
     ]
-    commands = ["$exiv2 -pa --grep lens/i ../../../test/data/" + files[0]] \
-        + list(map(
-            lambda fname: "$exiv2 -pa --grep lenstype/i ../../../test/data/" + fname,
-            files[1:]
-        ))
+    commands = [
+        f"$exiv2 -pa --grep lens/i ../../../test/data/{files[0]}"
+    ] + list(
+        map(
+            lambda fname: f"$exiv2 -pa --grep lenstype/i ../../../test/data/{fname}",
+            files[1:],
+        )
+    )
     retval = [0] * len(files)
 
     stdout = [

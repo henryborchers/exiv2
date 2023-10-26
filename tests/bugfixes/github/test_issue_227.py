@@ -3,6 +3,8 @@
 import system_tests
 
 
+
+
 class SigmaLenses(metaclass=system_tests.CaseMeta):
 
     files = [
@@ -12,7 +14,9 @@ class SigmaLenses(metaclass=system_tests.CaseMeta):
     ]
 
     commands = list(
-        map(lambda fname: "$exiv2 -pa --grep lens/i $data_path/" + fname, files)
+        map(
+            lambda fname: f"$exiv2 -pa --grep lens/i $data_path/{fname}", files
+        )
     )
 
     retval = 3 * [0]

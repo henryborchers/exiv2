@@ -3,6 +3,8 @@
 import system_tests
 
 
+
+
 class TestFirstPoC(metaclass=system_tests.CaseMeta):
     """
     Regression test for the two bugs described in:
@@ -17,10 +19,7 @@ class TestFirstPoC(metaclass=system_tests.CaseMeta):
         system_tests.path("$data_path/printStructure"),
         system_tests.path("$data_path/printStructure2")
     ]
-    commands = [
-        "$exiv2 " + filename[0],
-        "$exiv2 -pS " + filename[1],
-    ]
+    commands = [f"$exiv2 {filename[0]}", f"$exiv2 -pS {filename[1]}"]
     retval = [0, 1]
 
     compare_stderr = system_tests.check_no_ASAN_UBSAN_errors

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from system_tests import CaseMeta, CopyTmpFiles, path
-@CopyTmpFiles("$data_path/issue_2270_poc.webp")
 
+
+@CopyTmpFiles("$data_path/issue_2270_poc.webp")
 class WebPImage_inject_VP8X_integer_overflow(metaclass=CaseMeta):
     """
     Regression test for the bug described in:
@@ -14,7 +15,11 @@ class WebPImage_inject_VP8X_integer_overflow(metaclass=CaseMeta):
     commands = ["$exiv2 rm $filename"]
     stdout = [""]
     stderr = [
-        """$exception_in_erase """ + filename + """:
+        (
+            f"""$exception_in_erase {filename}"""
+            + """:
 $kerCorruptedMetadata
-"""]
+"""
+        )
+    ]
     retval = [1]

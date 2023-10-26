@@ -2,6 +2,8 @@
 
 from system_tests import CaseMeta, path, check_no_ASAN_UBSAN_errors
 
+
+
 class Jp2ImagePrintStructureICC(metaclass=CaseMeta):
     """
     Regression test for the bug described in:
@@ -12,7 +14,12 @@ class Jp2ImagePrintStructureICC(metaclass=CaseMeta):
     filename = path("$data_path/issue_ghsa_583f_w9pm_99r2_poc.jp2")
     commands = ["$exiv2 -p C $filename"]
     stdout = [""]
-    stderr = ["""$exiv2_exception_message """ + filename + """:
+    stderr = [
+        (
+            f"""$exiv2_exception_message {filename}"""
+            + """:
 $kerCorruptedMetadata
-"""]
+"""
+        )
+    ]
     retval = [1]

@@ -27,7 +27,7 @@ for lens_tc in test_cases:
     testname = lens_tc["id"] + "_" + lens_tc["desc"]
 
     globals()[testname] = system_tests.CaseMeta(
-        "canon_lenses." + testname,
+        f"canon_lenses.{testname}",
         tuple(),
         {
             "filename": "$data_path/template.exv",
@@ -35,12 +35,20 @@ for lens_tc in test_cases:
                 '$exiv2 -M"set Exif.CanonCs.LensType $lens_id" -M"set Exif.CanonCs.Lens $focal_length_max $focal_length_min 1" -M"set Exif.CanonCs.MaxAperture $aperture_max" $filename && $exiv2 -pa -K Exif.CanonCs.LensType $filename'
             ],
             "stderr": [""],
-            "stdout": ["Exif.CanonCs.LensType                        Short       1  $lens_description\n"],
+            "stdout": [
+                "Exif.CanonCs.LensType                        Short       1  $lens_description\n"
+            ],
             "retval": [0],
             "lens_id": lens_tc["id"],
             "lens_description": lens_tc["target"],
-            "aperture_max": aperture_to_raw_exif(lens_tc["aperture_max_short"] * lens_tc["tc"]),
-            "focal_length_min": int(lens_tc["focal_length_min"] * lens_tc["tc"]),
-            "focal_length_max": int(lens_tc["focal_length_max"] * lens_tc["tc"]),
+            "aperture_max": aperture_to_raw_exif(
+                lens_tc["aperture_max_short"] * lens_tc["tc"]
+            ),
+            "focal_length_min": int(
+                lens_tc["focal_length_min"] * lens_tc["tc"]
+            ),
+            "focal_length_max": int(
+                lens_tc["focal_length_max"] * lens_tc["tc"]
+            ),
         },
     )

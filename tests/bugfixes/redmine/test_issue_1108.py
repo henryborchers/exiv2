@@ -3,6 +3,8 @@
 import system_tests
 import unittest
 
+
+
 @unittest.skip("Skipping test using option -pR (only for Debug mode)")
 class CheckDumpSubFiles(metaclass=system_tests.CaseMeta):
 
@@ -14,13 +16,17 @@ class CheckDumpSubFiles(metaclass=system_tests.CaseMeta):
                  "$data_path/Reagan.jpg"
     ]
 
-    commands = ["$exiv2 -pR " + filenames[0],
-                "$exiv2 -pR " + filenames[1],
-                "$exiv2 -pR " + filenames[2],
-                "$exiv2 -pR " + filenames[3]
+    commands = [
+        f"$exiv2 -pR {filenames[0]}",
+        f"$exiv2 -pR {filenames[1]}",
+        f"$exiv2 -pR {filenames[2]}",
+        f"$exiv2 -pR {filenames[3]}",
     ]
 
-    stdout = [ """STRUCTURE OF JPEG FILE: """ + filenames[0] + """
+    stdout = [
+        (
+            f"""STRUCTURE OF JPEG FILE: {filenames[0]}"""
+            + """
  address | marker       |  length | data
        0 | 0xff01      
        7 | 0xffe1 APP1  |   15296 | Exif..II*......................
@@ -158,8 +164,11 @@ class CheckDumpSubFiles(metaclass=system_tests.CaseMeta):
        2 |       0 | RecordVersion            |      2 | ..
        2 |     120 | Caption                  |     12 | Classic View
    17987 | 0xffd9 EOI  
-""",
-    """STRUCTURE OF PNG FILE: """ + filenames[1] + """
+"""
+        ),
+        (
+            f"""STRUCTURE OF PNG FILE: {filenames[1]}"""
+            + """
  address | chunk |  length | data                           | checksum
        8 | IHDR  |      13 | ...@........                   | 0x7f775da4
       33 | iCCP  |    1404 | icc..x...i8........af\...w_3.. | 0x363e2409
@@ -294,8 +303,21 @@ Software: digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )
   133192 | IDAT  |    8192 | k........!..B*.....\*.(!..0.s. | 0x9b33b5b7
   141396 | IDAT  |    3346 | .Y.L@I$M.Z[.0A ...K#.t.0+.G(.j | 0x18044b20
   144754 | IEND  |       0 |                                | 0xae426082
-""",
-    """STRUCTURE OF TIFF FILE (II): """ + filenames[2] + """
+"""
+        ),
+        (
+            (
+                (
+                    (
+                        (
+                            (
+                                (
+                                    (
+                                        (
+                                            (
+                                                (
+                                                    f"""STRUCTURE OF TIFF FILE (II): {filenames[2]}"""
+                                                    + """
  address |    tag                              |      type |    count |    offset | value
       10 | 0x00fe NewSubfileType               |      LONG |        1 |           | 0
       22 | 0x0100 ImageWidth                   |     SHORT |        1 |           | 200
@@ -321,7 +343,11 @@ Software: digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )
      262 | 0x013b Artist                       |     ASCII |       34 |       936 | Photographer..s Mate 3rd Class ( ...
      274 | 0x013d Predictor                    |     SHORT |        1 |           | 2
      286 | 0x014a SubIFDs                      |      LONG |        1 |           | 1622480
-  STRUCTURE OF TIFF FILE (II): """ + filenames[2] + """
+  STRUCTURE OF TIFF FILE (II): """
+                                                )
+                                                + filenames[2]
+                                            )
+                                            + """
    address |    tag                              |      type |    count |    offset | value
    1622482 | 0x00fe NewSubfileType               |      LONG |        1 |           | 1
    1622494 | 0x0100 ImageWidth                   |     SHORT |        1 |           | 256
@@ -335,7 +361,11 @@ Software: digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )
    1622590 | 0x0117 StripByteCounts              |      LONG |        1 |           | 127488
    1622602 | 0x011c PlanarConfiguration          |     SHORT |        1 |           | 1
    1622614 | 0x0153 SampleFormat                 |     SHORT |        3 |   1622636 | 1 1 1
-  END """ + filenames[2] + """
+  END """
+                                        )
+                                        + filenames[2]
+                                    )
+                                    + """
      298 | 0x0153 SampleFormat                 |     SHORT |        3 |       970 | 1 1 1
      310 | 0x02bc XMLPacket                    |      BYTE |     7135 |       976 | <?xpacket begin="..." id="W5M0Mp ...
      322 | 0x83bb IPTCNAA                      |      LONG |      192 |      8112 | 5898524 1193614083 5243420 1869107232 1919381364 ...
@@ -345,7 +375,11 @@ Software: digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )
        2 |      85 | BylineTitle              |     21 | U.S Navy Photographer
        2 |     120 | Caption                  |    402 | 040621-N-6536T-062.USS Ronald Reagan (CV...
      334 | 0x8769 ExifTag                      |      LONG |        1 |           | 1622642
-  STRUCTURE OF TIFF FILE (II): """ + filenames[2] + """
+  STRUCTURE OF TIFF FILE (II): """
+                                )
+                                + filenames[2]
+                            )
+                            + """
    address |    tag                              |      type |    count |    offset | value
    1622644 | 0x829a ExposureTime                 |  RATIONAL |        1 |   1623092 | 1/125
    1622656 | 0x829d FNumber                      |  RATIONAL |        1 |   1623100 | 5/1
@@ -384,12 +418,23 @@ Software: digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )
    1623052 | 0xa40a Sharpness                    |     SHORT |        1 |           | 0
    1623064 | 0xa40c SubjectDistanceRange         |     SHORT |        1 |           | 0
    1623076 | 0xa420 ImageUniqueID                |     ASCII |       33 |   1623598 | 127c1377b054a3f65bf2754ebb24e7f2 ...
-  END """ + filenames[2] + """
+  END """
+                        )
+                        + filenames[2]
+                    )
+                    + """
      346 | 0x8773 InterColorProfile            | UNDEFINED |  1613600 |      8880 | ... APPL....prtrRGB Lab ........ ...
      358 | 0x8825 GPSTag                       |      LONG |        1 |           | 1623632
-END """ + filenames[2] + """
-""",
-    """STRUCTURE OF JPEG FILE: """ + filenames[3] + """
+END """
+                )
+                + filenames[2]
+            )
+            + """
+"""
+        ),
+        (
+            f"""STRUCTURE OF JPEG FILE: {filenames[3]}"""
+            + """
  address | marker       |  length | data
        0 | 0xffd8 SOI  
        2 | 0xffe1 APP1  |    5718 | Exif..MM.*......................
@@ -505,6 +550,7 @@ END """ + filenames[2] + """
    14846 | 0xffc4 DHT   |     418 
    15266 | 0xffda SOS  
 """
+        ),
     ]
     stderr = [""] * len(commands)
     retval = [0] * len(commands)

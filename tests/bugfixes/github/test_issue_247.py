@@ -2,6 +2,8 @@
 
 import system_tests
 
+
+
 class TestFirstPoC(metaclass=system_tests.CaseMeta):
     """
     Regression test for the first bug described in:
@@ -10,7 +12,7 @@ class TestFirstPoC(metaclass=system_tests.CaseMeta):
     url = "https://github.com/Exiv2/exiv2/issues/247"
 
     filename = "$data_path/2-invalid-memory-access"
-    commands = ["$exiv2 -pt -b " + filename]
+    commands = [f"$exiv2 -pt -b {filename}"]
     stdout = [
         """Exif.Image.Make                              Ascii       6  Canon
 Exif.Image.Orientation                       Short       1  top, left
