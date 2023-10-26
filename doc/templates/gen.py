@@ -15,7 +15,7 @@ def gen_html(file):
    """Replace variables in the file with their content"""
    text = open(file).read()
    for var in vars:
-      vartext = open(vardir + "/" + var).read()
+      vartext = open(f"{vardir}/{var}").read()
       text = text.replace(var, vartext)
    text = last_modified(text)
    return text

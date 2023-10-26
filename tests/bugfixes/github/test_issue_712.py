@@ -1,8 +1,9 @@
 import system_tests
 
 
-class BigTiffImageRecursionStackExhaustion(
-        metaclass=system_tests.CaseMeta):
+
+
+class BigTiffImageRecursionStackExhaustion(metaclass=system_tests.CaseMeta):
     """
     src/bigtiffimage.cpp is longer in the code base
     however, let's retain this test as support for BigTiff will
@@ -25,7 +26,11 @@ class BigTiffImageRecursionStackExhaustion(
     commands = ["$exiv2 -b -u -k pr $filename"]
     stdout = [""]
     stderr = [
-        """$exiv2_exception_message """ + filename + """:
+        (
+            f"""$exiv2_exception_message {filename}"""
+            + """:
 $filename: $kerFileContainsUnknownImageType
-"""]
+"""
+        )
+    ]
     retval = [1]

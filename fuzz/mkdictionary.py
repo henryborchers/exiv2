@@ -29,4 +29,4 @@ f = open(sys.argv[1], 'r')
 dict_json = json.loads(f.read())
 tuples = dict_json["#select"]["tuples"]
 for r in tuples:
-    print('"' + escapeString(r[0]) + '"')
+    print(f'"{escapeString(r[0])}"')

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from system_tests import CaseMeta, CopyTmpFiles, path
-@CopyTmpFiles("$data_path/issue_1845_poc.jp2")
 
+
+@CopyTmpFiles("$data_path/issue_1845_poc.jp2")
 class TiffDirectoryWriteDirEntryAssert(metaclass=CaseMeta):
     """
     Regression test for the bug described in:
@@ -13,8 +14,12 @@ class TiffDirectoryWriteDirEntryAssert(metaclass=CaseMeta):
     filename = path("$tmp_path/issue_1845_poc.jp2")
     commands = ["$exiv2 -q -D +1 ad $filename"]
     stderr = [
-        """$exception_in_adjust """ + filename + """:
+        (
+            f"""$exception_in_adjust {filename}"""
+            + """:
 $kerCorruptedMetadata
-"""]
+"""
+        )
+    ]
     stdout = [""]
     retval = [1]

@@ -19,11 +19,10 @@ class CreatePoC(FileDecoratorBase):
     def setUp_file_action(self, expanded_file_name):
         size = 0x20040
         contents = pack('<2sI8sHHIIHHII', bytes(b'II'), 14, bytes(b'HEAPCCDR'), \
-                        1, 0x300b, size - 26, 12, 1, 0x102a, size - 38, 12) + \
-                        bytes(bytearray(size-38))
-        f = open(expanded_file_name, 'wb')
-        f.write(contents)
-        f.close()
+                            1, 0x300b, size - 26, 12, 1, 0x102a, size - 38, 12) + \
+                            bytes(bytearray(size-38))
+        with open(expanded_file_name, 'wb') as f:
+            f.write(contents)
 
     def tearDown_file_action(self, f):
         """

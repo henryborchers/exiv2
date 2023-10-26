@@ -11,21 +11,48 @@ FORMATS = ["jpg", "psd"]
 
 def make_commands(filename):
     return [
-        """$exiv2 -u -v -M"set Exif.Photo.UserComment Test" """ + filename,
-        "$exiv2 -u -pt -b " + filename
+        f"""$exiv2 -u -v -M"set Exif.Photo.UserComment Test" {filename}""",
+        f"$exiv2 -u -pt -b {filename}",
     ]
 
 
 def make_filename(irb_type, img_format):
-    return "$data_path/exiv2-bug800-" + irb_type + "_copy." + img_format
+    return f"$data_path/exiv2-bug800-{irb_type}_copy.{img_format}"
 
 
 def make_stdout(irb_type, img_format):
-    first = """File 1/1: """ + make_filename(irb_type, img_format) + """
+    first = (
+        f"""File 1/1: {make_filename(irb_type, img_format)}"""
+        + """
 Set Exif.Photo.UserComment "Test" (Comment)
 """
+    )
 
-    if img_format == "jpg":
+    if img_format == 'psd':
+        second = """Exif.Image.ImageWidth                        Short       1  150
+Exif.Image.ImageLength                       Short       1  91
+Exif.Image.BitsPerSample                     Short       3  8 8 8
+Exif.Image.Orientation                       Short       1  top, left
+Exif.Image.SamplesPerPixel                   Short       1  3
+Exif.Image.XResolution                       Rational    1  72
+Exif.Image.YResolution                       Rational    1  72
+Exif.Image.ResolutionUnit                    Short       1  inch
+Exif.Image.Software                          Ascii      30  Adobe Photoshop CS5 Macintosh
+Exif.Image.DateTime                          Ascii      20  2011:06:27 21:41:02
+Exif.Image.ExifTag                           Long        1  218
+Exif.Photo.ExifVersion                       Undefined   4  2.21
+Exif.Photo.UserComment                       Undefined  12  Test
+Exif.Photo.ColorSpace                        Short       1  Uncalibrated
+Exif.Photo.PixelXDimension                   Long        1  150
+Exif.Photo.PixelYDimension                   Long        1  91
+Exif.Thumbnail.Compression                   Short       1  JPEG (old-style)
+Exif.Thumbnail.XResolution                   Rational    1  72
+Exif.Thumbnail.YResolution                   Rational    1  72
+Exif.Thumbnail.ResolutionUnit                Short       1  inch
+Exif.Thumbnail.JPEGInterchangeFormat         Long        1  390
+Exif.Thumbnail.JPEGInterchangeFormatLength   Long        1  0
+"""
+    elif img_format == "jpg":
         second = """Exif.Image.Orientation                       Short       1  top, left
 Exif.Image.XResolution                       Rational    1  180
 Exif.Image.YResolution                       Rational    1  180
@@ -65,30 +92,6 @@ Exif.Photo.WhiteBalance                      Short       1  Auto
 Exif.Photo.DigitalZoomRatio                  Rational    1  1.0
 Exif.Photo.SceneCaptureType                  Short       1  Standard
 """
-    elif img_format == 'psd':
-        second = """Exif.Image.ImageWidth                        Short       1  150
-Exif.Image.ImageLength                       Short       1  91
-Exif.Image.BitsPerSample                     Short       3  8 8 8
-Exif.Image.Orientation                       Short       1  top, left
-Exif.Image.SamplesPerPixel                   Short       1  3
-Exif.Image.XResolution                       Rational    1  72
-Exif.Image.YResolution                       Rational    1  72
-Exif.Image.ResolutionUnit                    Short       1  inch
-Exif.Image.Software                          Ascii      30  Adobe Photoshop CS5 Macintosh
-Exif.Image.DateTime                          Ascii      20  2011:06:27 21:41:02
-Exif.Image.ExifTag                           Long        1  218
-Exif.Photo.ExifVersion                       Undefined   4  2.21
-Exif.Photo.UserComment                       Undefined  12  Test
-Exif.Photo.ColorSpace                        Short       1  Uncalibrated
-Exif.Photo.PixelXDimension                   Long        1  150
-Exif.Photo.PixelYDimension                   Long        1  91
-Exif.Thumbnail.Compression                   Short       1  JPEG (old-style)
-Exif.Thumbnail.XResolution                   Rational    1  72
-Exif.Thumbnail.YResolution                   Rational    1  72
-Exif.Thumbnail.ResolutionUnit                Short       1  inch
-Exif.Thumbnail.JPEGInterchangeFormat         Long        1  390
-Exif.Thumbnail.JPEGInterchangeFormatLength   Long        1  0
-"""
     return [first, second]
 
 
@@ -98,7 +101,7 @@ FILES = [
 ]
 
 ORIGINAL_FILES = [
-    "$data_path/exiv2-bug800-" + irb_type + "." + img_format
+    f"$data_path/exiv2-bug800-{irb_type}.{img_format}"
     for irb_type, img_format in itertools.product(TYPES, FORMATS)
 ]
 
